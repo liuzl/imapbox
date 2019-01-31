@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 
+import chardet
 import imaplib, email
 import re
 import os
@@ -69,7 +70,9 @@ class MailboxClient:
     def saveEmail(self, data):
         for response_part in data:
             if isinstance(response_part, tuple):
-                msg = email.message_from_string(response_part[1].decode("utf-8"))
+                #msg = email.message_from_string(response_part[1].decode("utf-8"))
+                enc = chardet.detect(response_part[1])['encoding']
+                msg = email.message_from_string(response_part[1].decode(enc))
                 directory = self.getEmailFolder(msg, data[0][1])
 
                 if os.path.exists(directory):
